@@ -1,0 +1,5 @@
+{
+    "type": ["Canadian", "Cheese", "Hawaiian", "Meat Lovers", "Pepperoni", "Vegetarian"],
+    "crust": ["cauliflower", "deep dish", "regular", "thin crust"],
+    "size": ["individual", "small", "medium", "large"]
+}
