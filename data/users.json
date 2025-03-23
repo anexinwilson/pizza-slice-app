@@ -1,0 +1,22 @@
+[
+    {
+        "email": "user@gmail.com",
+        "password": "qwertyu",
+        "role": "c"
+    },
+    {
+        "email": "narutouzumaki@gmail.com",
+        "password": "asdfgh",
+        "role": "c"
+    },
+    {
+        "email": "truk@gmail.com",
+        "password": "qazxsw",
+        "role": "c"
+    },
+    {
+        "email": "truke@gmail.com",
+        "password": "qwerty",
+        "role": "s"
+    }
+]

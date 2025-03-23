@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+</head>
+<body>
+    <div>
+        <h2>Create Account</h2>
+        <form method="POST" action="/create">
+           {{ form.hidden_tag() }}
+           <div>
+              {{ form.email.label }}<br>
+              {{ form.email }}
+           </div>
+           <div>
+              {{ form.password.label }}<br>
+              {{ form.password }}
+           </div>
+     
+           <div>
+              {{ form.confirm_password.label }}<br>
+              {{ form.confirm_password }}
+           </div>
+     
+           <div>
+              {{ form.role.label }}<br>
+              {{ form.role }}
+           </div>
+           <div>
+              {{ form.submit }}
+           </div>
+        </form>
+        <p>Already have an account? <a href="{{ url_for('signin') }}">Sign in</a></p>
+     </div>    
+</body>
+</html>
