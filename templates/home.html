@@ -2,11 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Pizza Orders</title>
 </head>
 <body>
-    <h2>Welcome, {{ email }}!</h2>
-    <p><a href="{{ url_for('signout') }}">Sign out</a></p> 
+    <h2>Pizza Orders</h2>
+    <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Pizza Type</th>
+                <th>Crust</th>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Price Per Pizza</th>
+                <th>Order Date</th>
+                <th>Subtotal</th>
+                <th>Delivery Charge</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.type }}</td>
+                <td>{{ order.crust }}</td>
+                <td>{{ order.size }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>${{ order.price_per }}</td>
+                <td>{{ order.order_date }}</td>
+                <td>${{ order.subtotal }}</td>
+                <td>${{ order.delivery_charge }}</td>
+                <td>${{ order.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><a href="{{ url_for('signout') }}">Sign out</a></p>
+    <p><a href="{{ url_for('pizza') }}">Order New Pizza</a></p>
 </body>
 </html>

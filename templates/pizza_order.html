@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Pizza Order</title>
+</head>
+<body>
+    <h2>New Pizza Order</h2>
+    <form method="POST">
+        {{form.hidden_tag()}}
+        <p>
+            {{form.pizza_type.label }} {{ form.pizza_type()}}
+        </p>
+        <p>
+            {{form.crust.label }} {{ form.crust()}}
+        </p>
+        <p>
+            {{form.size.label }} {{ form.size()}}
+        </p>
+        <p>
+            {{form.quantity.label }} {{ form.quantity()}}
+        </p>
+        <p>
+            {{form.price_per.label }} {{ form.price_per()}}
+        </p>
+        <p>
+            {{form.order_date.label }} {{ form.order_date()}}
+        </p>
+        <p>
+            {{form.submit()}}
+        </p>
+    </form>
+    <p><a href="{{url_for('home')}}">Back to Home</a></p>
+</body>
+</html>

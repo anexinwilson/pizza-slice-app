@@ -9,30 +9,26 @@
     <div>
         <h2>Create Account</h2>
         <form method="POST" action="/create">
-           {{ form.hidden_tag() }}
+           {{form.hidden_tag()}}
            <div>
-              {{ form.email.label }}<br>
-              {{ form.email }}
+              {{form.email.label}} {{form.email}}
            </div>
            <div>
-              {{ form.password.label }}<br>
-              {{ form.password }}
+              {{form.password.label}} {{form.password}}
            </div>
      
            <div>
-              {{ form.confirm_password.label }}<br>
-              {{ form.confirm_password }}
+              {{form.confirm_password.label}} {{form.confirm_password}}
            </div>
      
            <div>
-              {{ form.role.label }}<br>
-              {{ form.role }}
+              {{form.role.label}} {{ form.role}}
            </div>
            <div>
-              {{ form.submit }}
+              {{form.submit}}
            </div>
         </form>
-        <p>Already have an account? <a href="{{ url_for('signin') }}">Sign in</a></p>
+        <p>Already have an account ? <a href="{{ url_for('signin') }}">Sign in</a></p>
      </div>    
 </body>
 </html>
