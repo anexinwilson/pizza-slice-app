@@ -19,8 +19,8 @@ def check_signin(email, password):
     return None
 
 def auth_routes(app):
-    @app.route('/signin', methods=['GET', 'POST'])
-    def signin():
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
         form = SigninForm()
         if form.validate_on_submit():
             email = form.email.data
@@ -46,6 +46,8 @@ def auth_routes(app):
             email = request.form.get('email')
             password = request.form.get('password')
             role = request.form.get('role')
+            if form.password.data != form.confirm_password.data:  
+                return render_template('signup.html', form=form, error="Passwords don't match")
             users = load_users()
 
             if any(user['email'] == email for user in users):
@@ -59,10 +61,9 @@ def auth_routes(app):
 
             users.append(new_user)
             add_users(users)
-            return redirect(url_for('signin'))
-        
-    @app.route('/signout')
-    def signout():
+            return redirect(url_for('login'))
+
+    @app.route('/logout')
+    def logout():
         session.clear()
-        return redirect(url_for('signin'))
-        
+        return redirect(url_for('login'))

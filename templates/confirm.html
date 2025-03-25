@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Deletion</title>
+    <script src="{{url_for('static', filename='index.js')}}"></script>
+</head>
+<body>
+    <h2>Confirm Deletion</h2>
+    <p>Are you sure you want to delete this order?</p>
+    <p>Type: {{order.type}}, Crust: {{order.crust}}, Size: {{order.size}}, Quantity: {{order.quantity}}</p>
+    <button onclick="deletePizzaOrder({{order.id}})">Yes</button>
+    <button onclick="window.location.href='{{url_for("home")}}'">No</button>
+    <p><a href="{{url_for('home')}}">Back to Home</a></p>
+</body>
+</html>
+

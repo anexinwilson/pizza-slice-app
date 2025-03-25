@@ -4,33 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Pizza Order</title>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 </head>
 <body>
-    <h2>New Pizza Order</h2>
-    <form method="POST">
+    <h2>Pizza Order</h2>
+    <form id="pizzaForm" method="POST">
         {{form.hidden_tag()}}
-        <p>
-            {{form.pizza_type.label }} {{ form.pizza_type()}}
-        </p>
-        <p>
-            {{form.crust.label }} {{ form.crust()}}
-        </p>
-        <p>
-            {{form.size.label }} {{ form.size()}}
-        </p>
-        <p>
-            {{form.quantity.label }} {{ form.quantity()}}
-        </p>
-        <p>
-            {{form.price_per.label }} {{ form.price_per()}}
-        </p>
-        <p>
-            {{form.order_date.label }} {{ form.order_date()}}
-        </p>
-        <p>
-            {{form.submit()}}
-        </p>
+        <p>{{form.pizza_type.label}} {{form.pizza_type()}}</p>
+        <p>{{form.crust.label}} {{form.crust()}}</p>
+        <p>{{form.size.label}} {{form.size()}}</p>
+        <p>{{form.quantity.label}} {{form.quantity()}}</p>
+        <p>{{form.price_per.label}} {{form.price_per()}}</p>
+        <p>{{form.order_date.label}} {{form.order_date()}}</p>
+        {% if order_id %}
+           <button type="button" onclick="updatePizzaOrder({{order_id}})">Update Order</button>
+        {% else %}
+           {{form.submit}}
+        {% endif %}
     </form>
-    <p><a href="{{url_for('home')}}">Back to Home</a></p>
+    <p><a href="{url_for('home')}}">Back to Home</a></p>
 </body>
 </html>
+
+

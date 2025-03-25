@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 from auth import auth_routes
 from pizza import pizza_routes
-from pizza_order import pizza_order_routes
 
 load_dotenv()
 
@@ -13,7 +12,6 @@ app.secret_key = os.getenv('SECRET_KEY')
 
 auth_routes(app)
 pizza_routes(app)
-pizza_order_routes(app)
 
 if __name__ == '__main__':
     app.run(port=int(os.getenv('FLASK_RUN_PORT')), host=os.getenv('FLASK_RUN_HOST'))

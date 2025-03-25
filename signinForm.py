@@ -4,9 +4,9 @@ from wtforms import validators
 
 class SigninForm(FlaskForm):
     email = StringField("Email:", [
-        validators.InputRequired("Email is required")  # Use validators namespace explicitly
+        validators.InputRequired("Email is required") 
     ])
     password = PasswordField("Password:", [
-        validators.InputRequired("Password is required")  # Use validators namespace explicitly
+        validators.InputRequired("Password is required")  
     ])
     submit = SubmitField("Sign in")

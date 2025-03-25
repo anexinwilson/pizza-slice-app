@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Pizza Orders</title>
+    <script src="{{url_for('static', filename='index.js')}}"></script>
 </head>
 <body>
     <h2>Pizza Orders</h2>
@@ -18,25 +19,30 @@
                 <th>Subtotal</th>
                 <th>Delivery Charge</th>
                 <th>Total</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for order in orders %}
             <tr>
-                <td>{{ order.type }}</td>
-                <td>{{ order.crust }}</td>
-                <td>{{ order.size }}</td>
-                <td>{{ order.quantity }}</td>
-                <td>${{ order.price_per }}</td>
-                <td>{{ order.order_date }}</td>
-                <td>${{ order.subtotal }}</td>
-                <td>${{ order.delivery_charge }}</td>
-                <td>${{ order.total }}</td>
+                <td>{{order.type}}</td>           
+                <td>{{order.crust}}</td>          
+                <td>{{order.size}}</td>          
+                <td>{{order.quantity}}</td>    
+                <td>{{order.price_per}}</td>     
+                <td>{{order.order_date}}</td>
+                <td>${{order.subtotal}}</td>
+                <td>${{order.delivery_charge}}</td>
+                <td>${{order.total}}</td>
+                <td>
+                    <button type="button" onclick="window.location.href='/pizza/{{order.id}}'">Edit</button>
+                    <button type="button" onclick="window.location.href='/confirm/{{order.id}}'">Delete</button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <p><a href="{{ url_for('signout') }}">Sign out</a></p>
-    <p><a href="{{ url_for('pizza') }}">Order New Pizza</a></p>
+    <p><a href="{{url_for('pizza')}}">Order New Pizza</a></p>
+    <p><a href="{{url_for('logout')}}">Sign out</a></p>
 </body>
 </html>
