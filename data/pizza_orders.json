@@ -18,15 +18,6 @@
         "order_date": "2025/03/13"
     },
     {
-        "id": 5,
-        "type": "Meat Lovers",
-        "crust": "deep dish",
-        "size": "large",
-        "quantity": 3,
-        "price_per": 15.0,
-        "order_date": "2025/03/28"
-    },
-    {
         "id": 6,
         "type": "Pepperoni",
         "crust": "thin crust",

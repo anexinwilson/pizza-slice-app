@@ -18,5 +18,10 @@
         "email": "truke@gmail.com",
         "password": "qwerty",
         "role": "s"
+    },
+    {
+        "email": "user1@gmail.com",
+        "password": "qwerty",
+        "role": "s"
     }
 ]

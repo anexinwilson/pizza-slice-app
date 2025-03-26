@@ -1,29 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Pizza Order</title>
-    <script src="{{ url_for('static', filename='index.js') }}"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{{url_for('static',filename='index.js')}}"></script>
 </head>
-<body>
-    <h2>Pizza Order</h2>
-    <form id="pizzaForm" method="POST">
-        {{form.hidden_tag()}}
-        <p>{{form.pizza_type.label}} {{form.pizza_type()}}</p>
-        <p>{{form.crust.label}} {{form.crust()}}</p>
-        <p>{{form.size.label}} {{form.size()}}</p>
-        <p>{{form.quantity.label}} {{form.quantity()}}</p>
-        <p>{{form.price_per.label}} {{form.price_per()}}</p>
-        <p>{{form.order_date.label}} {{form.order_date()}}</p>
-        {% if order_id %}
-           <button type="button" onclick="updatePizzaOrder({{order_id}})">Update Order</button>
-        {% else %}
-           {{form.submit}}
-        {% endif %}
-    </form>
-    <p><a href="{url_for('home')}}">Back to Home</a></p>
+
+<body class="bg-gray-100">
+    <header class="bg-cover bg-center h-96" style="background-image:url('{{url_for("static",filename="slice.jpg")}}');">
+        <div class="bg-black bg-opacity-50 h-full flex justify-center items-center">
+            <h1 class="text-5xl font-bold text-white">Pizza Slice</h1>
+        </div>
+    </header>
+    <div class="flex items-center justify-center py-8">
+        <div class="bg-white shadow rounded p-6 w-1/2">
+            <h2 class="text-2xl font-bold mb-6 text-center">Order Pizza</h2>
+            <form id="pizzaForm" method="POST" class="flex flex-col items-center">
+                {{form.hidden_tag()}}
+                <div class="mb-4 w-full flex flex-col items-center">
+                    <label class="block text-black w-80 text-left">{{form.pizza_type.label}}</label>
+                    {{form.pizza_type(class="border border-gray-300 rounded px-3 py-2 w-80")}}
+                </div>
+                <div class="mb-4 w-full flex flex-col items-center">
+                    <label class="block text-black w-80 text-left">{{form.crust.label}}</label>
+                    {{form.crust(class="border border-gray-300 rounded px-3 py-2 w-80")}}
+                </div>
+                <div class="mb-4 w-full flex flex-col items-center">
+                    <label class="block text-black w-80 text-left">{{form.size.label}}</label>
+                    {{form.size(class="border border-gray-300 rounded px-3 py-2 w-80")}}
+                </div>
+                <div class="mb-4 w-full flex flex-col items-center">
+                    <label class="block text-black w-80 text-left">{{form.quantity.label}}</label>
+                    {{form.quantity(class="border border-gray-300 rounded px-3 py-2 w-80")}}
+                </div>
+                <div class="mb-4 w-full flex flex-col items-center">
+                    <label class="block text-black w-80 text-left">{{form.price_per.label}}</label>
+                    {{form.price_per(class="border border-gray-300 rounded px-3 py-2 w-80")}}
+                </div>
+                <div class="mb-4 w-full flex flex-col items-center">
+                    <label class="block text-black w-80 text-left">{{form.order_date.label}}</label>
+                    {{form.order_date(class="border border-gray-300 rounded px-3 py-2 w-80")}}
+                </div>
+                {% if order_id %}
+                <div class="flex justify-center">
+                    <button type="button" onclick="updatePizzaOrder({{order_id}})" class="bg-yellow-500 text-white rounded px-4 py-2 hover:bg-yellow-600">Update Order</button>
+                </div>
+                {% else %}
+                <div class="flex justify-center">
+                    {{form.submit(class="bg-yellow-500 text-white rounded px-4 py-2 hover:bg-yellow-600")}}
+                </div>
+                {% endif %}
+            </form>
+            <p class="mt-4 text-center"><a href="{{url_for('home')}}" class=" text-xl text-yellow-500 hover:underline">Back to Home</a></p>
+        </div>
+    </div>
 </body>
 </html>
-
-

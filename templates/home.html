@@ -2,47 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizza Orders</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="{{url_for('static', filename='index.js')}}"></script>
 </head>
-<body>
-    <h2>Pizza Orders</h2>
-    <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-            <tr>
-                <th>Pizza Type</th>
-                <th>Crust</th>
-                <th>Size</th>
-                <th>Quantity</th>
-                <th>Price Per Pizza</th>
-                <th>Order Date</th>
-                <th>Subtotal</th>
-                <th>Delivery Charge</th>
-                <th>Total</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for order in orders %}
-            <tr>
-                <td>{{order.type}}</td>           
-                <td>{{order.crust}}</td>          
-                <td>{{order.size}}</td>          
-                <td>{{order.quantity}}</td>    
-                <td>{{order.price_per}}</td>     
-                <td>{{order.order_date}}</td>
-                <td>${{order.subtotal}}</td>
-                <td>${{order.delivery_charge}}</td>
-                <td>${{order.total}}</td>
-                <td>
-                    <button type="button" onclick="window.location.href='/pizza/{{order.id}}'">Edit</button>
-                    <button type="button" onclick="window.location.href='/confirm/{{order.id}}'">Delete</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <p><a href="{{url_for('pizza')}}">Order New Pizza</a></p>
-    <p><a href="{{url_for('logout')}}">Sign out</a></p>
+<body class="bg-gray-100">
+    <header class="bg-cover bg-center h-96" style="background-image: url('{{ url_for('static', filename='slice.jpg') }}');">
+        <div class="bg-black bg-opacity-50 h-full flex justify-center items-center">
+            <h1 class="text-8xl font-bold text-white">Pizza Slice</h1>
+        </div>
+    </header>
+
+    <div class="container mx-auto py-8">
+        <div class="bg-white shadow rounded p-6">
+            <table class="min-w-full border border-gray-300">
+                <thead class="bg-yellow-500 text-white">
+                    <tr>
+                        <th class="p-3 font-bold">Pizza</th>
+                        <th class="p-3 font-bold">Type</th>
+                        <th class="p-3 font-bold">Crust</th>
+                        <th class="p-3 font-bold">Size</th>
+                        <th class="p-3 font-bold">Quantity</th>
+                        <th class="p-3 font-bold">Price Per Pizza</th>
+                        <th class="p-3 font-bold">Order Date</th>
+                        <th class="p-3 font-bold">Subtotal</th>
+                        <th class="p-3 font-bold">Delivery Charge</th>
+                        <th class="p-3 font-bold">Total</th>
+                        <th class="p-3 font-bold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr class="border-b border-gray-300 bg-gray-50">
+                        <td class="p-3">
+                            <img src="{{url_for('static', filename='pizza.jpg') }}" alt="Pizza" class="w-12 h-12 rounded-full">
+                        </td>
+                        <td class="p-3 text-center">{{order.type}}</td>
+                        <td class="p-3 text-center">{{order.crust}}</td>
+                        <td class="p-3 text-center">{{order.size}}</td>
+                        <td class="p-3 text-center">{{order.quantity}}</td>
+                        <td class="p-3 text-center">{{order.price_per}}</td>
+                        <td class="p-3 text-center">{{order.order_date }}</td>
+                        <td class="p-3 text-center">{{order.subtotal}}</td>
+                        <td class="p-3 text-center">{{order.delivery_charge}}</td>
+                        <td class="p-3 text-center">{{order.total}}</td>
+                        <td class="p-3 flex space-x-2">
+                            <button type="button" onclick="window.location.href='/pizza/{{ order.id }}'" class="bg-green-600 text-white rounded px-3 py-1 hover:bg-green-700">Edit</button>
+                            <button type="button" onclick="window.location.href='/confirm/{{ order.id }}'" class="bg-red-600 text-white rounded px-3 py-1 hover:bg-red-700">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="mt-6 text-center">
+                <a href="{{url_for('pizza') }}" class="text-xl text-yellow-600 hover:underline font-semibold">Order New Pizza</a> |
+                <a href="{{url_for('logout') }}" class="text-xl text-yellow-600 hover:underline font-semibold">Sign out</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

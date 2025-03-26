@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="min-h-screen bg-cover bg-center flex items-center justify-center" style="background-image:url('{{url_for("static",filename="pizza_bg.jpg")}}');">
+<div class="bg-white bg-opacity-90 shadow-md rounded-lg p-8 w-full max-w-md">
+  <h2 class="text-2xl font-bold text-center mb-6">Sign In</h2>
+  <form method="POST" action="{{url_for('login')}}">
+    {{form.hidden_tag()}}
+    <div class="mb-4">
+      <label class="block text-gray-700">{{form.email.label}}</label>
+      {{form.email(class="w-full border border-gray-300 rounded px-3 py-2")}}
+    </div>
+    <div class="mb-6">
+      <label class="block text-gray-700">{{form.password.label}}</label>
+      {{form.password(class="w-full border border-gray-300 rounded px-3 py-2")}}
+    </div>
     <div>
-      <h2>Sign in</h2>
-      <form method="POST" action="/login">
-         {{form.hidden_tag()}}
-         <div>
-            {{form.email.label}}<br>
-            {{form.email}}
-         </div>
-         <div>
-            {{form.password.label}}<br>
-            {{form.password}}
-         </div>
-         <div>
-            {{form.submit}}
-         </div>
-      </form>
-        <p>Don't have an account? <a href="{{url_for('create_account')}}">Create one</a></p>
-     </div>     
+      {{form.submit(class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded")}}
+    </div>
+  </form>
+  <p class="mt-4 text-center">Don't have an account? <a href="{{url_for('create_account')}}" class="text-yellow-500 hover:underline">Create one</a></p>
+</div>
 </body>
 </html>

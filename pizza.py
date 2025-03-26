@@ -29,7 +29,7 @@ def pizza_routes(app):
     @app.route('/')
     def home():
         if 'signin' not in session:
-            return redirect(url_for('signin'))
+            return redirect(url_for('login'))
         orders = load_orders()
         orders_sorted = sorted(orders, key=sort_order_date, reverse=True)  # descending order
         for order in orders_sorted:
