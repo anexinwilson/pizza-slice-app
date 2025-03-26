@@ -1,14 +1,5 @@
 [
     {
-        "id": 1,
-        "type": "Hawaiian",
-        "crust": "regular",
-        "size": "individual",
-        "quantity": 3,
-        "price_per": 53.0,
-        "order_date": "2025/03/06"
-    },
-    {
         "id": 4,
         "type": "Vegetarian",
         "crust": "regular",
@@ -25,5 +16,14 @@
         "quantity": 4,
         "price_per": 20.0,
         "order_date": "2025/03/20"
+    },
+    {
+        "id": 7,
+        "type": "Cheese",
+        "crust": "regular",
+        "size": "large",
+        "quantity": 10,
+        "price_per": 23.0,
+        "order_date": "2025/04/05"
     }
 ]
