@@ -2,12 +2,13 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, IntegerField, FloatField, DateField, SubmitField
 from wtforms import validators 
 
+# Define a class for the pizza order form
 class PizzaForm(FlaskForm):
-    def __init__(self, pizza_type_choice, crust_choice, size_choice, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.pizza_type.choices = [(type, type) for type in pizza_type_choice]
-        self.crust.choices = [(crust, crust) for crust in crust_choice]
-        self.size.choices = [(size, size) for size in size_choice]
+    def __init__(self, pizza_type_choice, crust_choice, size_choice, *args, **kwargs):  # Initialize values to use in the form
+        super().__init__(*args, **kwargs) # Call the parent class constructor to set up the form fields
+        self.pizza_type.choices = [(type, type) for type in pizza_type_choice] # Set dropdown values for pizza choices to choose from
+        self.crust.choices = [(crust, crust) for crust in crust_choice] # Set dropdown values for crust
+        self.size.choices = [(size, size) for size in size_choice] # Set dropdown values for size
 
     pizza_type = SelectField("Pizza Type:", choices=[], validators=[
         validators.InputRequired("Please select a pizza type") 
