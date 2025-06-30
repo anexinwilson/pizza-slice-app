@@ -1,5 +1,3 @@
-# anexin.wilson_256A02
-
 # Pizza Slice App
 
 **Pizza Slice** is a web application built using Flask that allows users to sign up, log in, and manage pizza orders. Users can create, update, and delete pizza orders by selecting pizza type, crust, size, quantity, price per pizza, and order date. Login details are saved in `users.json`, and pizza order details are stored in `pizza_orders.json`.
