@@ -17,7 +17,7 @@ To run the app locally:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/anexinwilson/anexin.wilson-256A02.git
+   git clone https://github.com/anexinwilson/pizza-slice-app.git
    cd anexin.wilson-256A02
    ```
 
