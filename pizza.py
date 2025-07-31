@@ -57,7 +57,7 @@ def sort_order_date(order):
 @pizza_routes.route('/')
 def home():
     if 'signin' not in session:  # Redirect to login if user is not signed in
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
     orders = load_orders()  # Load existing pizza orders
 
     # # Sort the list of orders by date using the sort_order_date function as the sorting key;
@@ -75,7 +75,7 @@ def home():
 @pizza_routes.route('/pizza', methods=['GET', 'POST'])
 def pizza():
     if 'signin' not in session:  # Redirect if user not logged in
-        return redirect(url_for('signin'))
+        return redirect(url_for('auth.signin'))
 
     choice = load_pizza_choices()  # Load dropdown choices for type, crust, and size
 
@@ -103,14 +103,14 @@ def pizza():
 
         orders.append(new_order)  # Add the new order to the list
         save_orders(orders)  # Save the updated list to JSON
-        return redirect(url_for('home'))  # Redirect to home page after saving
+        return redirect(url_for('pizza.home'))  # Redirect to home page after saving
     return render_template('pizza_order.html', form=form, order_id=None)  # Show the order form
 
 # Route for editing, updating, or deleting an order by ID
 @pizza_routes.route('/pizza/<int:order_id>', methods=['GET', 'PUT', 'DELETE'])
 def edit_update_delete_pizza(order_id):
     if 'signin' not in session:  # Only allow signed in users
-        return redirect(url_for('signin'))
+        return redirect(url_for('auth.signin'))
 
     orders = load_orders()  # Load all orders
     current_order = None  # Initialize a variable to store the matched order
@@ -121,7 +121,7 @@ def edit_update_delete_pizza(order_id):
             break  # Stop looping once the match is found
 
     if current_order is None:  # If no order found with given ID
-        return redirect(url_for('home'))  # Redirect to home
+        return redirect(url_for('pizza.home'))  # Redirect to home
 
     # If GET method, show the form with existing values pre-filled
     if request.method == 'GET':
@@ -176,7 +176,7 @@ def edit_update_delete_pizza(order_id):
 @pizza_routes.route('/confirm/<int:order_id>', methods=['GET'])
 def confirm_deletion(order_id):
     if 'signin' not in session:  # Only signed-in users can access
-        return redirect(url_for('signin'))
+        return redirect(url_for('auth.signin'))
 
     orders = load_orders()  # Load all orders
     current_order = None  # Variable to store the order to confirm

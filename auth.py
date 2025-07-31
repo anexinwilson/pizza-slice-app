@@ -46,7 +46,7 @@ def login():
             session['signin'] = 'signed_in'  # Mark user as signed in
             session['user'] = user # Save entire user object to session
             session['role'] = user['role'] # Save user role
-            return redirect(url_for('home')) # Redirect to home page after login
+            return redirect(url_for('pizza.home')) # Redirect to home page after login
         else: # If credentials are wrong
             return render_template('signin.html', form=form, error="Invalid email or password")
     return render_template('signin.html', form=form) # If GET request, show empty login form
@@ -71,7 +71,7 @@ def create_account():
         users = load_users() # Load existing users from JSON
 
         if any(user['email'] == email for user in users): # If Email already exists in the system
-            return redirect(url_for('create_account')) # redirect again to signup.html without creating the user
+            return redirect(url_for('auth.create_account')) # redirect again to signup.html without creating the user
 
         # if Email is new and password matched — create new user and add to users.json
         new_user = { 
@@ -82,10 +82,10 @@ def create_account():
 
         users.append(new_user) # Add new user to the user list
         add_users(users) # Save updated list back to users.json
-        return redirect(url_for('login')) # Redirect user to login page after account creation
+        return redirect(url_for('auth.login')) # Redirect user to login page after account creation
 
 
 @auth_routes.route('/logout')  # Route to logout
 def logout():
     session.clear() # Clear all session data to log user out
-    return redirect(url_for('login'))  # Redirect user to login page
+    return redirect(url_for('auth.login'))  # Redirect user to login page
