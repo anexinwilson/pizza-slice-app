@@ -22,15 +22,15 @@ class User(db.Model):
 class PizzaOrder(db.Model):
     __tablename__='pizza_orders'
     id=db.Column(db.Integer, primary_key=True)
-    user_id=db.Column(db.Integer, db.foreignKey('users.id', ondelete="CASCADE"), nullable=False, index=True)
+    user_id=db.Column(db.Integer, db.ForeignKey('users.id', ondelete="CASCADE"), nullable=False, index=True)
     type=db.Column(db.String(30), nullable=False)
     crust=db.Column(db.String(30), nullable=False)
     type=db.Column(db.String(30), nullable=False)
     quantity=db.Column(db.Integer, nullable=False)
-    ordered_at=db.Column(db.dateTime, default=datetime.utcnow)
-    updated_at=db.Column(db.dateTime, onupdate=datetime.utcnow)
+    ordered_at=db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at=db.Column(db.DateTime, onupdate=datetime.utcnow)
     # creates relationship between the users and the order
-    user = db.relationship('User', backref='messages', lazy=True)
+    user = db.relationship('User', backref='pizza_orders', lazy=True)
 
     def __repr__(self) -> str:
         return f'PizzaOrder>>>{self.id}'
