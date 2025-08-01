@@ -6,35 +6,37 @@
 # It ensures that only logged-in users can access protected pages like placing or viewing pizza orders.
 # Sessions are used to keep users logged in and to store their role, which helps control what they can see or do.
 
-
-
 from flask import render_template, request, redirect, url_for, session, Blueprint
 from signupForm import SignupForm  
 from signinForm import SigninForm 
 import json
+from werkzeug.security import generate_password_hash, check_password_hash
+from models import User, db
 
 auth_routes=Blueprint('auth', __name__)
 
 # Function to load users from users.json and to be later used in other functions
 def load_users():
-    with open("data/users.json", "r") as file:
-        return json.load(file)
+    # Query from the database
+    users = User.query.all()
+    users_dict = [user.to_dict() for user in users] 
+    return json.dumps(users_dict)
 
 # Function to save users to users.json and to be later used in other functions
-def add_users(users):
-    with open("data/users.json", "w") as file:
-        json.dump(users, file, indent=4) # Add a indention of four spaces to json for better readability
+def add_users(user):
+    # Add to the database
+    db.session.add(user)
+    db.session.commit()
 
 # Check user credentials for sign in
 def check_signin(email, password):
-    users = load_users()  # Load all users json
-    for person in users: # Loop through each user
-        if person["email"] == email and person["password"] == password:
-            return person # Return user if match found
-    return None
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return None
+    if user.email == email and check_password_hash(user.password_hash, password):
+        return user # Return user if match found
 
-# Function to define all auth routes
-
+# define all auth routes
 @auth_routes.route('/login', methods=['GET', 'POST'])  # This route handles login for both GET and POST methods
 def login():
     form = SigninForm() # Create an instance of the sign-in form
@@ -44,11 +46,16 @@ def login():
         user = check_signin(email, password) # Check if the user exists
         if user: # # If user is found and credentials match
             session['signin'] = 'signed_in'  # Mark user as signed in
-            session['user'] = user # Save entire user object to session
-            session['role'] = user['role'] # Save user role
-            return redirect(url_for('pizza.home')) # Redirect to home page after login
-        else: # If credentials are wrong
-            return render_template('signin.html', form=form, error="Invalid email or password")
+            session['user'] = user.email # Save entire user object to session
+            session['role'] = user.role # Save user role
+            # I noticed that the staff members and the customers are getting the same data when they are logged in
+            # I have separated their data based on their separate roles
+            # Redirect the staff member to the dashboard after login
+            if user.role == 's':
+                return render_template('admin.html', email=user.email)
+            return redirect(url_for('pizza.home')) # Redirect customers to home page after login
+        # If credentials are wrong
+        return render_template('signin.html', form=form, error="Invalid email or password")
     return render_template('signin.html', form=form) # If GET request, show empty login form
 
 # This route handles creation of a new user account
@@ -61,29 +68,29 @@ def create_account():
 
     elif request.method == 'POST': # If it's a POST request then form submitted is submitted
         # Retrieve form data directly from  the request 
-        email = request.form.get('email')
-        password = request.form.get('password')
-        role = request.form.get('role')
+        email = form.email.data
+        password = form.password.data
+        comfirm_password = form.confirm_password.data
+        role = form.role.data
 
         # If Password and confirm password fields do not match
-        if form.password.data != form.confirm_password.data:  
+        if password != comfirm_password:  
             return render_template('signup.html', form=form, error="Passwords don't match")
-        users = load_users() # Load existing users from JSON
+        
+        # Check if the user email already exists
+        if User.query.filter_by(email=email).first():
+            return render_template('signup.html', form=form, error='Email already exists')
 
-        if any(user['email'] == email for user in users): # If Email already exists in the system
-            return redirect(url_for('auth.create_account')) # redirect again to signup.html without creating the user
+        # Hash user password before storage
+        password_hash = generate_password_hash(password) 
+        new_user = User(
+            email=email,
+            password_hash=password_hash,
+            role=role
+        )
 
-        # if Email is new and password matched — create new user and add to users.json
-        new_user = { 
-            "email": email,
-            "password": password,
-            "role": role
-        }
-
-        users.append(new_user) # Add new user to the user list
-        add_users(users) # Save updated list back to users.json
+        add_users(new_user) # Save updated list back to users.json
         return redirect(url_for('auth.login')) # Redirect user to login page after account creation
-
 
 @auth_routes.route('/logout')  # Route to logout
 def logout():

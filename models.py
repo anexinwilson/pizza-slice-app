@@ -14,6 +14,14 @@ class User(db.Model):
 
     def __repr__(self) -> str:
         return f'User>>>{self.id}'
+    
+    # A method to return a dictionary of user instance
+    def to_dict(self):
+        return {
+            "email": self.email,
+            "password": self.password_hash,
+            "role": self.role
+        }
 
 # It could have been a good idea to implement a separate pizza table to store the pizza details separately
 # But looking at the earlier code implementation then that calls for a change for the whole codebase in the pizza.py file and start again from scratch
