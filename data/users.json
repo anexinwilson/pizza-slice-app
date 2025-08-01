@@ -23,15 +23,4 @@
         "email": "user1@gmail.com",
         "password": "qwerty",
         "role": "s"
-    },
-    {
-        "email": "pmkundika99@gmail.com",
-        "password": "password",
-        "role": "c"
-    },
-    {
-        "email": "pmkundika@gmail.com",
-        "password": "password",
-        "role": "s"
     }
-]

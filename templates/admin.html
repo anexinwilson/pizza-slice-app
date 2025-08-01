@@ -48,7 +48,7 @@
                         <td class="p-3 text-center">{{order.price_per}}</td>
                         <td class="p-3 text-center">{{order.ordered_at }}</td>
                         <td class="p-3 text-center">{{ order.quantity * order.price_per }}</td>
-                        <td class="p-3 text-center">{{ (order.quantity * order.price_per) * 0.1}}</td>
+                        <td class="p-3 text-center">{{ (order.quantity * order.price_per) / 100}}</td>
                         <td class="p-3 text-center">{{ (order.quantity * order.price_per) + ((order.quantity * order.price_per) * 0.1)}}</td>
                         <td class="p-3 flex space-x-2">
                             <button type="button" onclick="window.location.href='/pizza/{{ order.id }}'" class="bg-green-600 text-white rounded px-3 py-1 hover:bg-green-700">Edit</button>

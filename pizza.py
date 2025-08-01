@@ -16,19 +16,16 @@
 
 # pizza.py helps manage how data flows between the Html and the backend .
 
+# Improvement
+# Format the date retrieved from the database
 
-from flask import render_template, redirect, url_for, session, jsonify, request , Blueprint
+from flask import render_template, redirect, url_for, session, request , Blueprint
 import json 
 from datetime import datetime  
 from pizzaForm import PizzaForm  
 from models import PizzaOrder, db
 
 pizza_routes = Blueprint('pizza', __name__)
-
-# Load all pizza orders from the pizza_orders.json file
-def load_orders():
-    with open("data/pizza_orders.json", "r") as file:
-        return json.load(file)  # Return the list of orders
 
 # Save the updated list of pizza orders to the pizza_orders.json file
 def save_orders(order):
@@ -109,6 +106,7 @@ def edit_update_delete_pizza(order_id):
     choice = load_pizza_choices()  # Load dropdown choices for type, crust, and size
 
     if not pizza_order:  # If no order found with given ID
+        # redirect user pages based on their roles
         if user_role == 's':
             return redirect(url_for('pizza.admin'))
         return redirect(url_for('pizza.home'))
@@ -149,6 +147,7 @@ def confirm_deletion(order_id):
         # go ahead delete the current order when the confirm button is clicked
         db.session.delete(current_order)
         db.session.commit()
+        # redirect user pages based on their roles
         if user_role == 's':
             return redirect(url_for('pizza.admin'))
         return redirect(url_for('pizza.home'))
