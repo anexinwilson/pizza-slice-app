@@ -1,29 +1,11 @@
 [
     {
-        "id": 4,
-        "type": "Vegetarian",
-        "crust": "regular",
-        "size": "medium",
-        "quantity": 3,
-        "price_per": 40.0,
-        "order_date": "2025/03/13"
-    },
-    {
-        "id": 6,
-        "type": "Pepperoni",
-        "crust": "thin crust",
-        "size": "medium",
-        "quantity": 4,
-        "price_per": 20.0,
-        "order_date": "2025/03/20"
-    },
-    {
-        "id": 7,
-        "type": "Cheese",
-        "crust": "regular",
-        "size": "large",
-        "quantity": 10,
-        "price_per": 23.0,
-        "order_date": "2025/04/05"
+        "id": 1,
+        "type": "Canadian",
+        "crust": "cauliflower",
+        "size": "individual",
+        "quantity": 1,
+        "price_per": 90290.0,
+        "order_date": "2025/07/31"
     }
 ]

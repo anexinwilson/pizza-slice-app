@@ -16,173 +16,139 @@
 
 # pizza.py helps manage how data flows between the Html and the backend .
 
+# Improvement
+# Format the date retrieved from the database
 
-from flask import render_template, redirect, url_for, session, jsonify, request 
+from flask import render_template, redirect, url_for, session, request , Blueprint
 import json 
 from datetime import datetime  
 from pizzaForm import PizzaForm  
+from models import PizzaOrder, db
 
-# Load all pizza orders from the pizza_orders.json file
-def load_orders():
-    with open("data/pizza_orders.json", "r") as file:
-        return json.load(file)  # Return the list of orders
+pizza_routes = Blueprint('pizza', __name__)
 
 # Save the updated list of pizza orders to the pizza_orders.json file
-def save_orders(orders):
-    with open("data/pizza_orders.json", "w") as file:
-        json.dump(orders, file, indent=4)  # Save with indentation to keep the JSON readable
-
-# Create a new  ID by checking the last highest ID in json files
-def generate_id():
-    orders = load_orders()
-    if not orders:  # If there are no orders
-        return 1  # Start IDs from 1
-    else:
-        return max(order["id"] for order in orders) + 1  # Get the highest ID and add 1
+def save_orders(order):
+    # Save the new order to database
+    db.session.add(order)
+    db.session.commit()
 
 # Load pizza types, crusts, and sizes from init.json file
 def load_pizza_choices():
     with open("data/init.json", "r") as file:
         return json.load(file)  # Return the dictionary of dropdown options
 
-# Convert the order date string to datetime format for sorting
-def sort_order_date(order):
-    return datetime.strptime(order['order_date'], '%Y/%m/%d')
-
 # Define all routes related to pizza ordering
-def pizza_routes(app):
 
-    # Route for the home page that shows all pizza orders
-    @app.route('/')
-    def home():
-        if 'signin' not in session:  # Redirect to login if user is not signed in
-            return redirect(url_for('login'))
-        orders = load_orders()  # Load existing pizza orders
+# Route for the home page that shows all pizza orders for the current user
+@pizza_routes.route('/')
+def home():
+    if 'signin' not in session:  # Redirect to login if user is not signed in
+        return redirect(url_for('auth.login'))
+    # get the user id from the session
+    user_id=session['user_id']
+    # Load pizza orders for the logged in user
+    orders_sorted = PizzaOrder.query.filter_by(user_id=user_id).order_by(PizzaOrder.ordered_at.desc()).all()
 
-        # # Sort the list of orders by date using the sort_order_date function as the sorting key;
-        #  reverse=True puts the latest orders first 
-        orders_sorted = sorted(orders, key=sort_order_date, reverse=True)
+    return render_template('home.html', orders=orders_sorted)  # Show all orders on home page
 
-        # For each order, calculate subtotal, delivery charge, and total
-        for order in orders_sorted:  # loop through each order in the sorted pizza orders
-            order['subtotal'] = order['quantity'] * order['price_per']  # Subtotal = quantity × price
-            order['delivery_charge'] = order['subtotal'] * 0.1  # Delivery charge is 10% of subtotal
-            order['total'] = order['subtotal'] + order['delivery_charge']  # Total = subtotal + delivery
-        return render_template('home.html', orders=orders_sorted)  # Show all orders on home page
+# Route for admin to show all pizza orders 
+@pizza_routes.route('/admin')
+def admin():
+    if 'signin' not in session:  # Redirect to login if user is not signed in
+        return redirect(url_for('auth.login'))
 
-    # Route to display the order form and save a new order
-    @app.route('/pizza', methods=['GET', 'POST'])
-    def pizza():
-        if 'signin' not in session:  # Redirect if user not logged in
-            return redirect(url_for('signin'))
+    # Load pizza orders for the logged in user
+    orders_sorted = PizzaOrder.query.order_by(PizzaOrder.ordered_at.desc()).all()
 
-        choice = load_pizza_choices()  # Load dropdown choices for type, crust, and size
+    return render_template('admin.html', orders=orders_sorted, email=session['email'])  # Show all orders on home page
+  # Show all orders on home page
 
-        # Create form using PizzaForm class from pizzaForm.py and pass values from init.json
-        form = PizzaForm(
-            pizza_type_choice=choice['type'],  # Set pizza type dropdown options
-            crust_choice=choice['crust'],  # Set crust options
-            size_choice=choice['size']  # Set size options
+# Route to display the order form and save a new order
+@pizza_routes.route('/pizza', methods=['GET', 'POST'])
+def pizza():
+    if 'signin' not in session:  # Redirect if user not logged in
+        return redirect(url_for('auth.signin'))
+    # get the current loggd in user id
+    user_id = session['user_id']
+    choice = load_pizza_choices()  # Load dropdown choices for type, crust, and size
+
+    # Create form using PizzaForm class from pizzaForm.py and pass values from init.json
+    form = PizzaForm(
+        pizza_type_choice=choice['type'],  # Set pizza type dropdown options
+        crust_choice=choice['crust'],  # Set crust options
+        size_choice=choice['size']  # Set size options
+    )
+
+    # Handle form submission for a pizza new order
+    if request.method == 'POST' and form.validate_on_submit():
+        # Create a new order using the submitted form data
+        new_order = PizzaOrder(
+            user_id=user_id,
+            type=form.pizza_type.data,  # Get selected pizza type
+            crust=form.crust.data,  # Get selected crust
+            size=form.size.data,  # Get selected size
+            quantity=form.quantity.data,  # Get quantity input
+            price_per=form.price_per.data,  # Get price per pizza
         )
+        save_orders(new_order)  # Save the updated list to JSON
+        return redirect(url_for('pizza.home'))  # Redirect to home page after saving
+    return render_template('pizza_order.html', form=form)  # Show the order form
 
-        # Handle form submission for a pizza new order
-        if request.method == 'POST' and form.validate_on_submit():
-            orders = load_orders()  # Load current orders
+# Route for editing, updating, or deleting an order by ID
+@pizza_routes.route('/pizza/<int:order_id>', methods=['GET', 'POST'])
+def edit_update_delete_pizza(order_id):
+    if 'signin' not in session:  # Only allow signed in users
+        return redirect(url_for('auth.signin'))
+    user_role = session['role']
+    # Get the order to be edited
+    pizza_order = PizzaOrder.query.filter_by(id=order_id).first()
+    choice = load_pizza_choices()  # Load dropdown choices for type, crust, and size
 
-            # Create a new order using the submitted form data
-            new_order = {
-                "id": generate_id(),  # Generate ID using generate_id() function
-                "type": form.pizza_type.data,  # Get selected pizza type
-                "crust": form.crust.data,  # Get selected crust
-                "size": form.size.data,  # Get selected size
-                "quantity": form.quantity.data,  # Get quantity input
-                "price_per": form.price_per.data,  # Get price per pizza
-                "order_date": form.order_date.data.strftime("%Y/%m/%d")  # Format date as string
-            }
+    if not pizza_order:  # If no order found with given ID
+        # redirect user pages based on their roles
+        if user_role == 's':
+            return redirect(url_for('pizza.admin'))
+        return redirect(url_for('pizza.home'))
+    # prefill the form
+    form = PizzaForm(obj=pizza_order, pizza_type_choice=choice['type'],  # Set pizza type dropdown options
+        crust_choice=choice['crust'],  # Set crust options
+        size_choice=choice['size'])
 
-            orders.append(new_order)  # Add the new order to the list
-            save_orders(orders)  # Save the updated list to JSON
-            return redirect(url_for('home'))  # Redirect to home page after saving
-        return render_template('pizza_order.html', form=form, order_id=None)  # Show the order form
+    # get the changes from the form and dave them in the database
+    if request.method == 'POST':
+        # form data
+        crust=form.crust.data
+        pizza_type=form.pizza_type.data
+        size=form.size.data
+        price=form.price_per.data
+        quantity=form.quantity.data
 
-    # Route for editing, updating, or deleting an order by ID
-    @app.route('/pizza/<int:order_id>', methods=['GET', 'PUT', 'DELETE'])
-    def edit_update_delete_pizza(order_id):
-        if 'signin' not in session:  # Only allow signed in users
-            return redirect(url_for('signin'))
+        pizza_order.type = pizza_type
+        pizza_order.crust = crust
+        pizza_order.size = size
+        pizza_order.price_per = price
+        pizza_order.quantity = quantity
+        db.session.commit() # save changes
+        if user_role == 's':
+            return redirect(url_for('pizza.admin'))
+        return redirect(url_for('pizza.home'))
+    return render_template('pizza_order.html', form=form)  # Show pre-filled form
 
-        orders = load_orders()  # Load all orders
-        current_order = None  # Initialize a variable to store the matched order
-
-        for order in orders: # Loop through all orders to find the one that matches the given order_id
-            if order['id'] == order_id: # Check if this order's ID matches the one provided in the URL from the route
-                current_order = order
-                break  # Stop looping once the match is found
-
-        if current_order is None:  # If no order found with given ID
-            return redirect(url_for('home'))  # Redirect to home
-
-        # If GET method, show the form with existing values pre-filled
-        if request.method == 'GET':
-            choice = load_pizza_choices()  # Load dropdown choices again
-
-            # Create a form and populate it with current order values
-            form = PizzaForm(
-                pizza_type_choice=choice['type'],
-                crust_choice=choice['crust'],
-                size_choice=choice['size']
-            )
-            form.pizza_type.data = current_order['type']
-            form.crust.data = current_order['crust']
-            form.size.data = current_order['size']
-            form.quantity.data = current_order['quantity']
-            form.price_per.data = current_order['price_per']
-            form.order_date.data = datetime.strptime(current_order['order_date'], '%Y/%m/%d').date()
-
-            return render_template('pizza_order.html', form=form, order_id=order_id)  # Show pre-filled form
-
-        # If PUT method, update the existing order
-        elif request.method == 'PUT':
-            new_data = request.form.to_dict()  # Get updated values from form
-
-            for order in orders:  # Loop through all the pizza orders
-                if order['id'] == order_id:  # Check if this order matches the ID passed in the URL
-                    order['type'] = new_data.get('pizza_type', order['type'])  # Update pizza type if provided
-                    order['crust'] = new_data.get('crust', order['crust'])  # Update crust if provided
-                    order['size'] = new_data.get('size', order['size'])  # Update size if provided
-                    order['quantity'] = int(new_data.get('quantity', order['quantity']))  # Update quantity, convert to integer
-                    order['price_per'] = float(new_data.get('price_per', order['price_per']))  # Update price per pizza
-                    if 'order_date' in new_data:  # If a new date is provided
-                        dt = datetime.strptime(new_data['order_date'], '%Y-%m-%d')  # Convert date string to datetime object
-                        order['order_date'] = dt.strftime("%Y/%m/%d")  # format and store the date string
-                    break  # Stop once the matching order is found and updated
-
-
-            save_orders(orders)  # Save the updated list
-            return jsonify({'success': True})  # Respond with success
-
-        # If DELETE method, remove the order with the given ID
-        elif request.method == 'DELETE':
-            new_orders = []  # Create a list to store remaining orders
-            for order in orders:
-                if order['id'] != order_id:  # Exclude the one being deleted
-                    new_orders.append(order)
-
-            save_orders(new_orders)  # Save the updated list
-            return jsonify({'success': True})  # Respond with success
-
-    # Route to confirm deletion before actually deleting the order
-    @app.route('/confirm/<int:order_id>', methods=['GET'])
-    def confirm_deletion(order_id):
-        if 'signin' not in session:  # Only signed-in users can access
-            return redirect(url_for('signin'))
-
-        orders = load_orders()  # Load all orders
-        current_order = None  # Variable to store the order to confirm
-
-        # This loop is used to find the specific pizza order from the list based on its ID.
-        for order in orders:  # Loop through all orders loaded from the JSON file
-            if order['id'] == order_id:  # Check if the current order's ID matches the ID from the URL
-                current_order = order  # Store the matched order in current_order for further use 
-                break  # Stop the loop once the matching order is found 
-        return render_template('confirm.html', order=current_order)  # load the confirmation page 
+# Route to confirm deletion before actually deleting the order
+@pizza_routes.route('/confirm/<int:order_id>', methods=['GET'])
+def confirm_deletion(order_id):
+    if 'signin' not in session:  # Only signed-in users can access
+        return redirect(url_for('auth.signin'))
+    user_role = session['role']
+    # get the order to delete using the current order id
+    current_order = PizzaOrder.query.filter_by(id=order_id).first()
+    if current_order:
+        # go ahead delete the current order when the confirm button is clicked
+        db.session.delete(current_order)
+        db.session.commit()
+        # redirect user pages based on their roles
+        if user_role == 's':
+            return redirect(url_for('pizza.admin'))
+        return redirect(url_for('pizza.home'))
+    return render_template('confirm.html', order=current_order)  # load the confirmation page 

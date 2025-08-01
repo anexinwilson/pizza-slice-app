@@ -25,14 +25,10 @@ class PizzaForm(FlaskForm):
     quantity = IntegerField("Quantity:", validators=[
         validators.InputRequired("Please enter a quantity"),
          validators.NumberRange(min=1, max=10, message="Quantity must be between 1 and 10")
-    ])
+    ], render_kw={"placeholder": "Enter quantity"})
 
     price_per = FloatField("Price Per Pizza:", validators=[
         validators.InputRequired("Please enter a price per pizza")  
-    ])
-
-    order_date = DateField("Order Date:", format='%Y-%m-%d', validators=[
-        validators.InputRequired("Please enter the order date")
-    ])
+    ], render_kw={"placeholder": "Enter price"})
 
     submit = SubmitField("Save")

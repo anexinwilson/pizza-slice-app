@@ -40,10 +40,7 @@
                     <label class="block text-black w-80 text-left">{{form.price_per.label}}</label>
                     {{form.price_per(class="border border-gray-300 rounded px-3 py-2 w-80")}}
                 </div>
-                <div class="mb-4 w-full flex flex-col items-center">
-                    <label class="block text-black w-80 text-left">{{form.order_date.label}}</label>
-                    {{form.order_date(class="border border-gray-300 rounded px-3 py-2 w-80")}}
-                </div>
+
                 {% if order_id %}
                 <div class="flex justify-center">
                     <button type="button" onclick="updatePizzaOrder({{order_id}})" class="bg-yellow-500 text-white rounded px-4 py-2 hover:bg-yellow-600">Update Order</button>
@@ -54,7 +51,7 @@
                 </div>
                 {% endif %}
             </form>
-            <p class="mt-4 text-center"><a href="{{url_for('home')}}" class=" text-xl text-yellow-500 hover:underline">Back to Home</a></p>
+            <p class="mt-4 text-center"><a href="{{url_for('pizza.home')}}" class=" text-xl text-yellow-500 hover:underline">Back to Home</a></p>
         </div>
     </div>
 </body>
