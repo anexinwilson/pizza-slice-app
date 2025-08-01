@@ -6,9 +6,12 @@
 # It ensures that only logged-in users can access protected pages like placing or viewing pizza orders.
 # Sessions are used to keep users logged in and to store their role, which helps control what they can see or do.
 
+# Improvement.
+# Allow users to register with username and display the username on the homepage when they are logged in
+
 from flask import render_template, request, redirect, url_for, session, Blueprint
 from signupForm import SignupForm  
-from signinForm import SigninForm 
+from signinForm import SigninForm
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import User, db
@@ -46,14 +49,16 @@ def login():
         user = check_signin(email, password) # Check if the user exists
         if user: # # If user is found and credentials match
             session['signin'] = 'signed_in'  # Mark user as signed in
-            session['user'] = user.email # Save entire user object to session
+            session['user_id'] = user.id # Save entire user object to session
+            session['email'] = user.email # Save entire user object to session
             session['role'] = user.role # Save user role
             # I noticed that the staff members and the customers are getting the same data when they are logged in
             # I have separated their data based on their separate roles
             # Redirect the staff member to the dashboard after login
             if user.role == 's':
-                return render_template('admin.html', email=user.email)
-            return redirect(url_for('pizza.home')) # Redirect customers to home page after login
+                return redirect(url_for('pizza.admin'))
+            # Redirect customers to home page after login
+            return redirect(url_for('pizza.home')) 
         # If credentials are wrong
         return render_template('signin.html', form=form, error="Invalid email or password")
     return render_template('signin.html', form=form) # If GET request, show empty login form
